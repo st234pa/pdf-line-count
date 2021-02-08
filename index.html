@@ -6,6 +6,12 @@
   </head>
   <body>
     <h1>PDF Line Count</h1>
+    <p>by Stephanie Yoon</p>
+    <p>
+      Your input file must be a PDF with only text that reads horizontally, a
+      solid color background, and at least one pixel of space between lines.
+    </p>
+
     <!--<label for="fileUrl">URL:</label>
     <input type="text" id="fileUrl" name="fileUrl" /> #} {#
     <button onclick="loadFromUrl()">Count</button><br /><br />
@@ -13,10 +19,19 @@
     <input
       type="file"
       id="fileUpload"
-      name="fileUpload"
+      name="choose file"
       onchange="loadFromFile()"
     />
     <canvas id="file-canvas" hidden="true"></canvas>
+    <br />
+    <br />
+    <a
+      target="_blank"
+      rel="noreferrer"
+      href="https://github.com/st234pa/pdf-line-count"
+      >For more information, you can check out my GitHub repository.
+    </a>
+    <p>Hope you find this application helpful!</p>
     <script src="https://unpkg.com/pdfjs-dist@latest/build/pdf.min.js"></script>
     <script>
       //const exampleUrl =
