@@ -8,8 +8,8 @@
     <h1>PDF Line Count</h1>
     <p>by Stephanie Yoon</p>
     <p>
-      Your input file must be a PDF with only text that reads horizontally, a
-      solid color background, and at least one pixel of space between lines.
+      Your input file must be a text-only PDF with a solid color background, and
+      at least one pixel of space between lines.
     </p>
 
     <!--<label for="fileUrl">URL:</label>
@@ -39,9 +39,6 @@
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://unpkg.com/pdfjs-dist@latest/build/pdf.worker.js";
 
-      const canvas = document.getElementById("file-canvas");
-      const context = canvas.getContext("2d");
-
       // function loadFromUrl() {
       //  const url = document.getElementById("fileUrl").value;
       //  processPdfFrom(encodeURI(url));
@@ -60,48 +57,64 @@
         fileReader.readAsArrayBuffer(file);
       }
 
+      function countLinesInPage(pdf, pageNumber) {
+        return new Promise((resolve) => {
+          pdf.getPage(pageNumber).then((page) => {
+            console.log("Page loaded");
+            const viewport = page.getViewport({ scale: 1 });
+
+            // Prepare canvas using PDF page dimensions
+            const canvas = document.createElement("canvas");
+            canvas.hidden = true;
+            const context = canvas.getContext("2d");
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            // Render PDF page into canvas context
+            const renderTask = page.render({
+              canvasContext: context,
+              viewport: viewport,
+            });
+            renderTask.promise.then(() => {
+              console.log("Page rendered");
+              const imageData = context.getImageData(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+              );
+              const pageCount = countLines(
+                imageData.data,
+                canvas.width,
+                canvas.height
+              );
+              resolve(pageCount);
+            });
+          });
+        });
+      }
+
       function processPdfFrom(pdfInput) {
         const loadingTask = pdfjsLib.getDocument(pdfInput);
         loadingTask.promise
           .then(function (pdf) {
             console.log("PDF loaded");
-            let numLines = 0;
-            for (let p = 1; p <= pdf.numPages; p++) {
-              pdf.getPage(p).then((page) => {
-                console.log("Page loaded");
-                const viewport = page.getViewport({ scale: 1 });
+            const promises = [];
 
-                // Prepare canvas using PDF page dimensions
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
+            for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+              promises.push(countLinesInPage(pdf, pageNumber));
+            }
 
-                // Render PDF page into canvas context
-                const renderTask = page.render({
-                  canvasContext: context,
-                  viewport: viewport,
-                });
-                renderTask.promise.then(() => {
-                  console.log("Page rendered");
-                  const imageData = context.getImageData(
-                    0,
-                    0,
-                    canvas.width,
-                    canvas.height
-                  );
-                  numLines += countLines(
-                    imageData.data,
-                    canvas.width,
-                    canvas.height
-                  );
-                });
+            Promise.all(promises)
+              .then((results) => {
+                const numLines = results.reduce((a, b) => a + b, 0);
+                alert(`Number of lines in PDF: ${numLines}`);
+              })
+              .catch((e) => {
+                // Handle errors here
               });
-            }
-            if (numLines === 1) {
-              alert("There is 1 line in this PDF");
-            } else {
-              alert(`There are ${numLines} lines in this PDF`);
-            }
           })
+
           .catch((error) => alert(`Something went wrong: ${error}`));
       }
       function countLines(data, width, height) {
