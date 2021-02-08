@@ -50,10 +50,16 @@
                   canvas.width,
                   canvas.height
                 );
-                console.log(imageData);
-                console.log(
-                  countLines(imageData.data, canvas.width, canvas.height)
+                const numLines = countLines(
+                  imageData.data,
+                  canvas.width,
+                  canvas.height
                 );
+                if (numLines === 1) {
+                  alert("There is 1 line in this file");
+                } else {
+                  alert(`There are ${numLines} lines in this file`);
+                }
               });
             });
           })
@@ -89,7 +95,6 @@
         }
         return numLines;
       }
-      console.log(countLines([0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2], 3, 1));
     </script>
   </body>
 </html>
