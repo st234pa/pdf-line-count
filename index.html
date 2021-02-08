@@ -28,7 +28,7 @@
 
       function loadFromUrl() {
         const url = document.getElementById("fileUrl").value;
-        processPdfFrom(url);
+        processPdfFrom(encodeURI(url));
       }
 
       function loadFromFile() {
