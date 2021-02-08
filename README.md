@@ -11,7 +11,7 @@ PDFs are basically images, so this application uses [PDF.js](https://mozilla.git
 - there are at least two pixels in the row that different colors
 - if there exists a row above it, that row is single-colored
 
-For this reason, the input must be a PDF with only text that reads horizontally, a solid color background, and at least one pixel of space between lines.
+For this reason, the input must be a text-only PDF with a solid color background, and at least one pixel of space between lines.
 ### Please Note
 I threw this together as a simple prototype, so the algorithm is not very robust,
 the set of valid inputs is quite limited,
