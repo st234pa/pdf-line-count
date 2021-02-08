@@ -16,12 +16,9 @@
     <input type="text" id="fileUrl" name="fileUrl" /> #} {#
     <button onclick="loadFromUrl()">Count</button><br /><br />
     -->
-    <input
-      type="file"
-      id="fileUpload"
-      name="choose file"
-      onchange="loadFromFile()"
-    />
+    <input type="file" id="fileUpload" name="choose file" />
+    <br /><br />
+    <button onclick="loadFromFile()">Count Lines</button>
     <canvas id="file-canvas" hidden="true"></canvas>
     <br />
     <br />
@@ -45,16 +42,19 @@
       // }
 
       function loadFromFile() {
-        const file = document.getElementById("fileUpload").files[0];
-        console.log(file);
-        const fileReader = new FileReader();
-        fileReader.onload = function () {
-          //Step 4:turn array buffer into typed array
-          const typedarray = new Uint8Array(this.result);
-          processPdfFrom(typedarray);
-        };
-        //Step 3:Read the file as ArrayBuffer
-        fileReader.readAsArrayBuffer(file);
+        const files = document.getElementById("fileUpload").files;
+        if (files.length > 0) {
+          const file = files[0];
+          console.log(file);
+          const fileReader = new FileReader();
+          fileReader.onload = function () {
+            //Step 4:turn array buffer into typed array
+            const typedarray = new Uint8Array(this.result);
+            processPdfFrom(typedarray);
+          };
+          //Step 3:Read the file as ArrayBuffer
+          fileReader.readAsArrayBuffer(file);
+        }
       }
 
       function countLinesInPage(pdf, pageNumber) {
