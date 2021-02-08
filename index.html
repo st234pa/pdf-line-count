@@ -8,7 +8,13 @@
     <h1>PDF Line Count</h1>
     <label for="fileUrl">URL:</label>
     <input type="text" id="fileUrl" name="fileUrl" />
-    <button onclick="processPdfFrom()">Count</button>
+    <button onclick="loadFromUrl()">Count</button><br /><br />
+    <input
+      type="file"
+      id="fileUpload"
+      name="fileUpload"
+      onchange="loadFromFile()"
+    />
     <canvas id="file-canvas" hidden="true"></canvas>
     <script src="https://unpkg.com/pdfjs-dist@latest/build/pdf.min.js"></script>
     <script>
@@ -20,9 +26,26 @@
       const canvas = document.getElementById("file-canvas");
       const context = canvas.getContext("2d");
 
-      function processPdfFrom() {
+      function loadFromUrl() {
         const url = document.getElementById("fileUrl").value;
-        const loadingTask = pdfjsLib.getDocument(url);
+        processPdfFrom(url);
+      }
+
+      function loadFromFile() {
+        const file = document.getElementById("fileUpload").files[0];
+        console.log(file);
+        const fileReader = new FileReader();
+        fileReader.onload = function () {
+          //Step 4:turn array buffer into typed array
+          const typedarray = new Uint8Array(this.result);
+          processPdfFrom(typedarray);
+        };
+        //Step 3:Read the file as ArrayBuffer
+        fileReader.readAsArrayBuffer(file);
+      }
+
+      function processPdfFrom(pdfInput) {
+        const loadingTask = pdfjsLib.getDocument(pdfInput);
         loadingTask.promise
           .then(function (pdf) {
             console.log("PDF loaded");
@@ -56,14 +79,14 @@
                   canvas.height
                 );
                 if (numLines === 1) {
-                  alert("There is 1 line in this file");
+                  alert("There is 1 line in this PDF");
                 } else {
-                  alert(`There are ${numLines} lines in this file`);
+                  alert(`There are ${numLines} lines in this PDF`);
                 }
               });
             });
           })
-          .catch((error) => console.log(error));
+          .catch((error) => alert(`Something went wrong: ${error}`));
       }
       function countLines(data, width, height) {
         let numLines = 0;
