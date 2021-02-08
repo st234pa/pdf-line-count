@@ -4,7 +4,7 @@
 
 ### How to Use
 
-Click [this link](st234pa.github.io/pdf-line-count/) and choose a file from your computer.
+Click [this link](https://st234pa.github.io/pdf-line-count/) and choose a file from your computer.
 
 ### How it Works
 PDFs are basically images, so this application uses [PDF.js](https://mozilla.github.io/pdf.js/) to parse the input and then counts the number of rows of pixels that satisfy the following conditions:
