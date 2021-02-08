@@ -65,42 +65,42 @@
         loadingTask.promise
           .then(function (pdf) {
             console.log("PDF loaded");
+            let numLines = 0;
+            for (let p = 1; p <= pdf.numPages; p++) {
+              pdf.getPage(p).then((page) => {
+                console.log("Page loaded");
+                const viewport = page.getViewport({ scale: 1 });
 
-            // Fetch the first page
-            const pageNumber = 1;
-            pdf.getPage(pageNumber).then((page) => {
-              console.log("Page loaded");
-              const viewport = page.getViewport({ scale: 1 });
+                // Prepare canvas using PDF page dimensions
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
 
-              // Prepare canvas using PDF page dimensions
-              canvas.height = viewport.height;
-              canvas.width = viewport.width;
-
-              // Render PDF page into canvas context
-              const renderTask = page.render({
-                canvasContext: context,
-                viewport: viewport,
+                // Render PDF page into canvas context
+                const renderTask = page.render({
+                  canvasContext: context,
+                  viewport: viewport,
+                });
+                renderTask.promise.then(() => {
+                  console.log("Page rendered");
+                  const imageData = context.getImageData(
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                  );
+                  numLines += countLines(
+                    imageData.data,
+                    canvas.width,
+                    canvas.height
+                  );
+                });
               });
-              renderTask.promise.then(() => {
-                console.log("Page rendered");
-                const imageData = context.getImageData(
-                  0,
-                  0,
-                  canvas.width,
-                  canvas.height
-                );
-                const numLines = countLines(
-                  imageData.data,
-                  canvas.width,
-                  canvas.height
-                );
-                if (numLines === 1) {
-                  alert("There is 1 line in this PDF");
-                } else {
-                  alert(`There are ${numLines} lines in this PDF`);
-                }
-              });
-            });
+            }
+            if (numLines === 1) {
+              alert("There is 1 line in this PDF");
+            } else {
+              alert(`There are ${numLines} lines in this PDF`);
+            }
           })
           .catch((error) => alert(`Something went wrong: ${error}`));
       }
