@@ -18,3 +18,5 @@ the set of valid inputs is quite limited,
 and the user interface is extremely bare bones.
 Expanding the set of valid inputs (PDFs with images, multi-colored backgrounds, etc.) and catching some contrived edge cases (for instance, a line of all lowercase i's or all ?'s would be counted as two lines instead of one)
 would require a much more complex solution, probably using computer vision.
+
+[PDF.js](https://mozilla.github.io/pdf.js/), the only library I used to build this application, is an open source project that is led by the Mozilla Foundation. Everything else is in HTML and vanilla Javascript. 
