@@ -16,6 +16,10 @@
       //"https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/examples/learning/helloworld.pdf";
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://unpkg.com/pdfjs-dist@latest/build/pdf.worker.js";
+
+      const canvas = document.getElementById("file-canvas");
+      const context = canvas.getContext("2d");
+
       function processPdfFrom() {
         const url = document.getElementById("fileUrl").value;
         const loadingTask = pdfjsLib.getDocument(url);
@@ -30,8 +34,6 @@
               const viewport = page.getViewport({ scale: 1 });
 
               // Prepare canvas using PDF page dimensions
-              const canvas = document.getElementById("file-canvas");
-              const context = canvas.getContext("2d");
               canvas.height = viewport.height;
               canvas.width = viewport.width;
 
@@ -49,11 +51,45 @@
                   canvas.height
                 );
                 console.log(imageData);
+                console.log(
+                  countLines(imageData.data, canvas.width, canvas.height)
+                );
               });
             });
           })
           .catch((error) => console.log(error));
       }
+      function countLines(data, width, height) {
+        let numLines = 0;
+        let previousMulti = false;
+        for (let y = 0; y < height; y++) {
+          let isMulti = false;
+          const base = width * y * 4;
+          const firstR = data[base];
+          const firstG = data[base + 1];
+          const firstB = data[base + 2];
+          const firstA = data[base + 3];
+
+          for (let x = 1; x < width; x++) {
+            const i = (width * y + x) * 4;
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            const a = data[i + 3];
+
+            if (r !== firstR || g !== firstG || b !== firstB || a !== firstA) {
+              isMulti = true;
+              if (!previousMulti) {
+                numLines++;
+              }
+              break;
+            }
+          }
+          previousMulti = isMulti;
+        }
+        return numLines;
+      }
+      console.log(countLines([0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2], 3, 1));
     </script>
   </body>
 </html>
