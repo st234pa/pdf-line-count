@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PDF Line Count</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <h1>PDF Line Count</h1>
+    <label for="fileUrl">URL:</label>
+    <input type="text" id="fileUrl" name="fileUrl" />
+    <button onclick="processPdfFrom()">Count</button>
+    <canvas id="file-canvas" hidden="true"></canvas>
+    <script src="https://unpkg.com/pdfjs-dist@latest/build/pdf.min.js"></script>
+    <script>
+      //const exampleUrl =
+      //"https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/examples/learning/helloworld.pdf";
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://unpkg.com/pdfjs-dist@latest/build/pdf.worker.js";
+      function processPdfFrom() {
+        const url = document.getElementById("fileUrl").value;
+        const loadingTask = pdfjsLib.getDocument(url);
+        loadingTask.promise
+          .then(function (pdf) {
+            console.log("PDF loaded");
+
+            // Fetch the first page
+            const pageNumber = 1;
+            pdf.getPage(pageNumber).then((page) => {
+              console.log("Page loaded");
+              const viewport = page.getViewport({ scale: 1 });
+
+              // Prepare canvas using PDF page dimensions
+              const canvas = document.getElementById("file-canvas");
+              const context = canvas.getContext("2d");
+              canvas.height = viewport.height;
+              canvas.width = viewport.width;
+
+              // Render PDF page into canvas context
+              const renderTask = page.render({
+                canvasContext: context,
+                viewport: viewport,
+              });
+              renderTask.promise.then(() => {
+                console.log("Page rendered");
+                const imageData = context.getImageData(
+                  0,
+                  0,
+                  canvas.width,
+                  canvas.height
+                );
+                console.log(imageData);
+              });
+            });
+          })
+          .catch((error) => console.log(error));
+      }
+    </script>
+  </body>
+</html>
