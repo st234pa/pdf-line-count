@@ -20,15 +20,17 @@
     <br /><br />
     <button onclick="loadFromFile()">Count Lines</button>
     <canvas id="file-canvas" hidden="true"></canvas>
-    <br />
-    <br />
+    <p>
+      White space is not included in the line count. There are some edge cases
+      for which this app will output inaccurate results.
+    </p>
     <a
       target="_blank"
       rel="noreferrer"
       href="https://github.com/st234pa/pdf-line-count"
       >For more information, you can check out my GitHub repository.
     </a>
-    <p>Hope you find this application helpful!</p>
+
     <script src="https://unpkg.com/pdfjs-dist@latest/build/pdf.min.js"></script>
     <script>
       //const exampleUrl =
