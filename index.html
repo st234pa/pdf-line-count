@@ -7,8 +7,9 @@
   <body>
     <h1>PDF Line Count</h1>
     <label for="fileUrl">URL:</label>
-    <input type="text" id="fileUrl" name="fileUrl" />
+    {# <input type="text" id="fileUrl" name="fileUrl" /> #} {#
     <button onclick="loadFromUrl()">Count</button><br /><br />
+    #}
     <input
       type="file"
       id="fileUpload"
@@ -26,10 +27,10 @@
       const canvas = document.getElementById("file-canvas");
       const context = canvas.getContext("2d");
 
-      function loadFromUrl() {
-        const url = document.getElementById("fileUrl").value;
-        processPdfFrom(encodeURI(url));
-      }
+      // function loadFromUrl() {
+      //  const url = document.getElementById("fileUrl").value;
+      //  processPdfFrom(encodeURI(url));
+      // }
 
       function loadFromFile() {
         const file = document.getElementById("fileUpload").files[0];
